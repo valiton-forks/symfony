@@ -673,4 +673,14 @@ class TimeTypeTest extends TypeTestCase
             'with_seconds' => true,
         ));
     }
+
+    public function testStringInputWithoutSeconds()
+    {
+        $form = $this->factory->create('time', '14:28', array(
+            'input' => 'string'
+        ));
+        $view = $form->createView();
+        $this->assertSame($view['hour']->vars['value'], '14');
+        $this->assertSame($view['minute']->vars['value'], '28');
+    }
 }
