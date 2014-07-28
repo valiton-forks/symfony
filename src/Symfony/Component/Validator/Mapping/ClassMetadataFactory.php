@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Validator\Mapping;
 
+use Symfony\Component\Security\Core\Util\ClassUtils;
 use Symfony\Component\Validator\MetadataFactoryInterface;
 use Symfony\Component\Validator\Exception\NoSuchMetadataException;
 use Symfony\Component\Validator\Mapping\Loader\LoaderInterface;
@@ -52,7 +53,7 @@ class ClassMetadataFactory implements MetadataFactoryInterface
             throw new NoSuchMetadataException(sprintf('Cannot create metadata for non-objects. Got: %s', gettype($value)));
         }
 
-        $class = ltrim(is_object($value) ? get_class($value) : $value, '\\');
+        $class = ltrim(is_object($value) ? ClassUtils::getRealClass($value) : $value, '\\');
 
         if (isset($this->loadedClasses[$class])) {
             return $this->loadedClasses[$class];
