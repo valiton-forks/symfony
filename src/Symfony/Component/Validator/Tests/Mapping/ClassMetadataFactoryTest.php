@@ -42,16 +42,16 @@ class ClassMetadataFactoryTest extends \PHPUnit_Framework_TestCase
         $constraints = array(
             new ConstraintA(array('groups' => array(
                 'Default',
+                'Entity',
+            ))),
+            new ConstraintA(array('groups' => array(
+                'Default',
                 'EntityParent',
                 'Entity',
             ))),
             new ConstraintA(array('groups' => array(
                 'Default',
                 'EntityInterface',
-                'Entity',
-            ))),
-            new ConstraintA(array('groups' => array(
-                'Default',
                 'Entity',
             ))),
         );

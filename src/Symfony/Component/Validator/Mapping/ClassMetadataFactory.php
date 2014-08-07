@@ -59,6 +59,7 @@ class ClassMetadataFactory implements MetadataFactoryInterface
         }
 
         if (null !== $this->cache && false !== ($this->loadedClasses[$class] = $this->cache->read($class))) {
+            $this->mergeParent($this->loadedClasses[$class]);
             return $this->loadedClasses[$class];
         }
 
@@ -68,6 +69,21 @@ class ClassMetadataFactory implements MetadataFactoryInterface
 
         $metadata = new ClassMetadata($class);
 
+        if (null !== $this->loader) {
+            $this->loader->loadClassMetadata($metadata);
+        }
+
+        if (null !== $this->cache) {
+            $this->cache->write($metadata);
+        }
+
+        $this->mergeParent($metadata);
+
+        return $this->loadedClasses[$class] = $metadata;
+    }
+
+    protected function mergeParent(ClassMetadata $metadata)
+    {
         // Include constraints from the parent class
         if ($parent = $metadata->getReflectionClass()->getParentClass()) {
             $metadata->mergeConstraints($this->getMetadataFor($parent->name));
@@ -80,16 +96,6 @@ class ClassMetadataFactory implements MetadataFactoryInterface
             }
             $metadata->mergeConstraints($this->getMetadataFor($interface->name));
         }
-
-        if (null !== $this->loader) {
-            $this->loader->loadClassMetadata($metadata);
-        }
-
-        if (null !== $this->cache) {
-            $this->cache->write($metadata);
-        }
-
-        return $this->loadedClasses[$class] = $metadata;
     }
 
     /**
